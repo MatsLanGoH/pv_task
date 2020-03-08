@@ -1,0 +1,23 @@
+version: '3'
+services:
+  broker:
+    image: rabbitmq:management-alpine
+    stdin_open: true
+    tty: true
+
+  pv_sim:
+    build: .
+    command: python3 pv_sim/pv.py
+    stdin_open: true
+    tty: true
+    depends_on:
+      - broker
+
+  grid:
+    build: .
+    command: python3 meter/meter.py
+    stdin_open: true
+    tty: true
+    depends_on:
+      - broker
+
