@@ -1,15 +1,21 @@
-version: '3'
+version: "3"
 services:
   broker:
     image: rabbitmq:management-alpine
+    restart: always
     stdin_open: true
     tty: true
+    ports:
+      - 5672:5672 # port for the daemon API
+      - 15672:15672 # port for the RabbitMQ management interface
 
   pv_sim:
     build: .
     command: python3 pv_sim/pv.py
     stdin_open: true
     tty: true
+    links:
+      - broker
     depends_on:
       - broker
 
@@ -18,6 +24,7 @@ services:
     command: python3 meter/meter.py
     stdin_open: true
     tty: true
+    links:
+      - broker
     depends_on:
       - broker
-

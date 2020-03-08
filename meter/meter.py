@@ -10,7 +10,7 @@ import pika
 class BrokerSender:
     def __init__(self, broker_host: str, queue: str):
         self.connection = pika.BlockingConnection(
-            pika.ConnectionParameters(host=broker_host)
+            pika.ConnectionParameters(broker_host)
         )
         self.channel = self.connection.channel()
         self.queue = self.channel.queue_declare(queue=queue, durable=True)
@@ -24,11 +24,12 @@ class Meter:
 
 def main():
     QUEUE = "task_queue"
-    sender = BrokerSender(broker_host="host.docker.internal", queue=QUEUE)
+    BROKER_HOST = "broker"
+    sender = BrokerSender(broker_host=BROKER_HOST, queue=QUEUE)
     meter = Meter()
     try:
         while True:
-            msg = meter.generate_value()
+            msg = str(meter.generate_value())
             sender.channel.basic_publish(
                 exchange="",
                 routing_key=QUEUE,
