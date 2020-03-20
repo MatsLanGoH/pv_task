@@ -1,5 +1,5 @@
 """
-Module to establish connection with message broker 
+Module to establish connection with message broker
 """
 
 from pika import (

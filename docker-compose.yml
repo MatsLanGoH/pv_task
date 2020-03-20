@@ -15,9 +15,7 @@ services:
     stdin_open: true
     tty: true
     volumes:
-      - type: bind
-        source: reports
-        target: /results
+      - ./results:/results
     links:
       - broker
     depends_on:
