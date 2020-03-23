@@ -24,8 +24,9 @@ class ConnectionManager:
 
         return channel
 
-    def publish_message(self, ch: BlockingChannel, msg: str):
-        timestamp = int(time.time())
+    def publish_message(self, ch: BlockingChannel, msg: str, timestamp: int = None):
+        if not timestamp:
+            timestamp = int(time.time())
         ch.basic_publish(
             exchange="",
             routing_key=self.queue,

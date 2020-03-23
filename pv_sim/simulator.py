@@ -5,7 +5,6 @@ import csv
 import pathlib
 from dataclasses import asdict, dataclass
 from datetime import datetime, timezone
-from pprint import pprint
 
 from suntime import Sun
 
@@ -96,7 +95,7 @@ def calculate_pv_output(dt: datetime, sunrise: datetime, sunset: datetime) -> in
 
     zenith_percentage = abs(zenith - dt).total_seconds() / dist_to_zenith_seconds
 
-    sun_intensity = (1 - zenith_percentage) ** 2
+    sun_intensity = zenith_percentage ** 2
     output = PV_MAX_TOTAL_OUTPUT_KW - (PV_MAX_TOTAL_OUTPUT_KW * sun_intensity)
 
     return int(output)

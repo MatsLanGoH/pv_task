@@ -3,8 +3,7 @@ Meter simulator
 """
 import random
 import time
-
-import pika
+from datetime import datetime
 
 from message_broker.connection import ConnectionManager
 
@@ -27,6 +26,20 @@ class Meter:
                 time.sleep(5)
         except KeyboardInterrupt:
             pass
+
+    def start_timelapse(self) -> None:
+        conn_manager = ConnectionManager(broker_host=self.broker_host, queue=self.queue)
+        channel = conn_manager.start_channel()
+        current_date = datetime.now().replace(hour=0, minute=0, second=0, microsecond=0)
+        for h in range(0, 24):
+            for m in range(0, 60, 5):
+                dt = current_date.replace(hour=h, minute=m)
+                timestamp = int(time.mktime(dt.timetuple()))
+
+                self.generate_consumption()
+                msg = str(self.consumption)
+                conn_manager.publish_message(channel, msg=msg, timestamp=timestamp)
+                print(f" [x] Timestamp: {dt}\tMeter: {msg} kW.")
 
     def generate_consumption(self) -> int:
         last_consumption = self.consumption

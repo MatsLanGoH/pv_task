@@ -1,4 +1,5 @@
 # Linting / formatting
 black
+flake8
 isort
 pip-tools
