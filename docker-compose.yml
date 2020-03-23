@@ -20,10 +20,13 @@ services:
       - broker
     depends_on:
       - broker
+      - grid
 
   grid:
     build: .
-    command: ["python3", "./run_grid.py"]
+    env_file:
+      - ./grid.env
+    command: ["python3", "./run_grid.py", "--timelapse=$${TIMELAPSE}"]
     stdin_open: true
     tty: true
     links:

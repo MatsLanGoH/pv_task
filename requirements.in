@@ -2,6 +2,9 @@
 pika
 retry
 
+# CLI tools
+fire
+
 # PV Generator
 suntime
 
