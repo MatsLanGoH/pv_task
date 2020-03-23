@@ -19,16 +19,10 @@ class Meter:
         conn_manager = ConnectionManager(broker_host=self.broker_host, queue=self.queue)
         channel = conn_manager.start_channel()
         try:
-            # TODO: Consider abstracting this so Meter doesn't have to worry about pika implementation details
             while True:
                 self.generate_consumption()
                 msg = str(self.consumption)
-                channel.basic_publish(
-                    exchange="",
-                    routing_key=self.queue,
-                    body=msg,
-                    properties=pika.BasicProperties(delivery_mode=2),
-                )
+                conn_manager.publish_message(channel, msg=msg)
                 print(f" [x] Meter: {msg} kW.")
                 time.sleep(5)
         except KeyboardInterrupt:

@@ -5,6 +5,7 @@ import csv
 import pathlib
 from dataclasses import asdict, dataclass
 from datetime import datetime, timezone
+from pprint import pprint
 
 from suntime import Sun
 
@@ -63,7 +64,14 @@ class PVSimulator:
     @staticmethod
     def callback(ch, method, properties, body):
         print(f" [x] Received {str(body)} kW.")
-        current_time = datetime.now().replace(tzinfo=timezone.utc)
+
+        try:
+            timestamp = properties.timestamp
+            current_time = datetime.utcfromtimestamp(timestamp).replace(
+                tzinfo=timezone.utc
+            )
+        except AttributeError:
+            current_time = datetime.now().replace(tzinfo=timezone.utc)
 
         pv_photovoltaic = generate_pv_output(current_time)
 
@@ -81,13 +89,7 @@ def is_sunny(dt: datetime, sunrise: datetime, sunset: datetime) -> bool:
     return sunrise <= dt <= sunset
 
 
-def calculate_pv_output(dt: datetime, sun: Sun) -> int:
-    sunrise = sun.get_sunrise_time()
-    sunset = sun.get_sunset_time()
-
-    if not is_sunny(dt, sunrise, sunset):
-        return 0
-
+def calculate_pv_output(dt: datetime, sunrise: datetime, sunset: datetime) -> int:
     distance_to_zenith = (sunset - sunrise) / 2
     zenith = sunrise + distance_to_zenith
     dist_to_zenith_seconds = distance_to_zenith.total_seconds()
@@ -103,5 +105,10 @@ def calculate_pv_output(dt: datetime, sun: Sun) -> int:
 def generate_pv_output(dt: datetime) -> int:
     sun = Sun(LATITUDE, LONGITUDE)
 
-    output = calculate_pv_output(dt, sun)
-    return output
+    sunrise = sun.get_sunrise_time()
+    sunset = sun.get_sunset_time()
+
+    if not is_sunny(dt, sunrise, sunset):
+        return 0
+
+    return calculate_pv_output(dt, sunrise, sunset)
