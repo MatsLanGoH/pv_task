@@ -20,7 +20,7 @@ This starts a continuous meter/PV simulation. The services run until halted manu
 
 This generates a simulation of values for 24 hours with 5 minute intervals.
 
-1. Uncomment the `#TIMELAPSE=True` line in `grid.env`, then restart the services using the same steps as in `Standard execution`.
+1. Uncomment the `#TIMELAPSE=True` line in `.env`, then restart the services using the same steps as in `Standard execution`.
 
 NOTE: This implementaiton uses the same naming scheme for the CSV file, so if you test both `live` and `timelapse` simulations it's probably best to delete the ouput files inbetween.
 

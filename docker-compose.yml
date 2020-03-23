@@ -24,9 +24,7 @@ services:
 
   grid:
     build: .
-    env_file:
-      - ./grid.env
-    command: ["python3", "./run_grid.py", "--timelapse=$${TIMELAPSE}"]
+    command: ["python3", "./run_grid.py", "--timelapse=$TIMELAPSE"]
     stdin_open: true
     tty: true
     links:
